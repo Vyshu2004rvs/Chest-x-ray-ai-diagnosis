@@ -28,7 +28,9 @@ Run the Final.ipynb File and Save the Model in the models Folder
 
 To Run Backend:uvicorn main:app --reload,
 Open index1.html in your browser.
+
 or 
+
 Can use the Gradio Code in the Final_Gradio_Code.ipynb
 
 ---
