@@ -24,7 +24,7 @@ A deep learning-powered project for classifying chest X-ray images into **COVID-
 ---
 ## How to Use
 
-To Run Backend:uvicorn main:app --reload 
+To Run Backend:uvicorn main:app --reload,
 Open index1.html in your browser.
 or 
 Can use the Gradio Code in the Final_Gradio_Code.ipynb
