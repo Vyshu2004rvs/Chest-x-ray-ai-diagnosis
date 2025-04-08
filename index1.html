@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chest X-ray Classification</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-image: url('image-8.png'); /* Path to your image file */
+      background-size:cover;       /* Makes sure the image covers the entire background */
+      background-position: center;  /* Centers the image */
+      background-repeat: no-repeat; /* Prevents the image from repeating */
+    }
+
+    .header {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #fafdff;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 30px;
+      background: #ffffff99;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    .drop-area {
+      border: 2px dashed #7f8c8db0;
+      padding: 40px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: border-color 0.3s ease;
+      background-color: #ecf0f1a8;
+      margin-bottom: 20px;
+    }
+
+    .drop-area.dragging {
+      border-color: #2980b9;
+    }
+
+    .drop-area img {
+      width: 50px;
+      margin-top: 10px;
+      opacity: 0.8;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    button {
+      background-color: #297fb9d5;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #21618c;
+    }
+
+    .preview-image, .gradcam-image {
+      display: block;
+      margin: 20px auto;
+      max-width: 600px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    #result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    #gradcam-section {
+      text-align: center;
+      margin-top: 30px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Chest X-ray Classification</div>
+
+  <div class="container">
+    <h1>Upload a Chest X-ray Image to Predict Disease and Severity</h1>
+
+    <div id="drop-area" class="drop-area">
+      <p id="dragText">Drag & Drop or Click to Select</p>
+      <img src="file-upload.png" alt="Upload Icon" width="60" />
+    </div>
+
+    <input type="file" id="fileInput" accept="image/*" hidden />
+    <img id="preview" class="preview-image" alt="Preview" style="display: none;" />
+
+    <div class="button-row">
+      <button id="uploadBtn">Upload Image</button>
+      <button id="clearBtn">Clear</button>
+    </div>
+
+    <div id="result"></div>
+
+    <div id="gradcam-section">
+      <h3>Grad-CAM Visualization</h3>
+      <img id="gradcam" class="gradcam-image" alt="Grad-CAM Result" />
+    </div>
+  </div>
+
+  <script>
+    const dropArea = document.getElementById("drop-area");
+    const fileInput = document.getElementById("fileInput");
+    const preview = document.getElementById("preview");
+    const resultDiv = document.getElementById("result");
+    const gradcamImg = document.getElementById("gradcam");
+    const gradcamSection = document.getElementById("gradcam-section");
+
+    let selectedFile = null;
+
+    dropArea.addEventListener("click", () => fileInput.click());
+
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        selectedFile = file;
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+        dropArea.style.display = "none"; // Hide drop area
+      }
+    });
+
+    dropArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropArea.classList.add("dragging");
+    });
+
+    dropArea.addEventListener("dragleave", () => {
+      dropArea.classList.remove("dragging");
+    });
+
+    dropArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropArea.classList.remove("dragging");
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        selectedFile = file;
+        fileInput.files = e.dataTransfer.files;
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+        dropArea.style.display = "none"; // Hide drop area
+      }
+    });
+
+    document.getElementById("uploadBtn").addEventListener("click", async () => {
+      if (!selectedFile) {
+        alert("Please select an image first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      try {
+        const response = await fetch("http://localhost:8000/predict", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) throw new Error("Prediction failed.");
+
+        const data = await response.json();
+
+        resultDiv.innerHTML = `
+          <strong>Disease:</strong> ${data.disease} <br/>
+          <strong>Severity:</strong> ${data.severity}
+        `;
+
+        gradcamImg.src = `data:image/png;base64,${data.gradcam}`;
+        gradcamSection.style.display = "block";
+
+      } catch (error) {
+        resultDiv.innerHTML = `<span style="color:red;">Error: ${error.message}</span>`;
+      }
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      fileInput.value = "";
+      preview.src = "";
+      preview.style.display = "none";
+      selectedFile = null;
+      resultDiv.innerHTML = "";
+      gradcamImg.src = "";
+      gradcamSection.style.display = "none";
+      dropArea.style.display = "block"; // Show drop area again
+    });
+  </script>
+</body>
+</html>
