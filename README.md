@@ -25,6 +25,7 @@ A deep learning-powered project for classifying chest X-ray images into **COVID-
 ## How to Use
 
 Run the Final.ipynb File and Save the Model in the models Folder
+
 To Run Backend:uvicorn main:app --reload,
 Open index1.html in your browser.
 or 
