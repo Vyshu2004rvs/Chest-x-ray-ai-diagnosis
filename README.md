@@ -37,5 +37,5 @@ Can use the Gradio Code in the Final_Gradio_Code.ipynb
 ## Use responsibly for academic and healthcare research. Not intended for clinical use.
 
 ---
-##🙌 Acknowledgements
-Kaggle Chest X-ray COVID-19 & Pneumonia Dataset
+## 🙌 Acknowledgements
+Kaggle Chest X-ray COVID-19 & Pneumonia Dataset: https://www.kaggle.com/datasets/prashant268/chest-xray-covid19-pneumonia
