@@ -24,6 +24,7 @@ A deep learning-powered project for classifying chest X-ray images into **COVID-
 ---
 ## How to Use
 
+Run the Final.ipynb File and Save the Model in the models Folder
 To Run Backend:uvicorn main:app --reload,
 Open index1.html in your browser.
 or 
@@ -32,3 +33,6 @@ Can use the Gradio Code in the Final_Gradio_Code.ipynb
 ---
 ## Use responsibly for academic and healthcare research. Not intended for clinical use.
 
+---
+##🙌 Acknowledgements
+Kaggle Chest X-ray COVID-19 & Pneumonia Dataset
