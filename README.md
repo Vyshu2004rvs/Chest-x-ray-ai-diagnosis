@@ -39,9 +39,9 @@ Can use the Gradio Code in the Final_Gradio_Code.ipynb
 ---
 
 ## Output
-![Alt Text]("F:\Chest X_Ray Classification\Screenshot 2025-06-24 092848.png")
 
-![Alt Text]("F:\Chest X_Ray Classification\Screenshot 2025-06-24 092929.png")
+![Demo Screenshot](images/image1.png)
+![Demo Screenshot](images/image2.png)
 
 ## 🙌 Acknowledgements
 Kaggle Chest X-ray COVID-19 & Pneumonia Dataset: https://www.kaggle.com/datasets/prashant268/chest-xray-covid19-pneumonia
